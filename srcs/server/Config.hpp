@@ -6,7 +6,7 @@
 /*   By: rovillar <rovillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/31 02:39:07 by rovillar          #+#    #+#             */
-/*   Updated: 2023/10/31 02:47:53 by rovillar         ###   ########.fr       */
+/*   Updated: 2023/11/02 16:35:16 by rovillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,9 @@
 
 # include <string>
 # include <map>
+# include <fstream>
+# include <sstream>
+# include <iostream>
 
 class Config
 {
@@ -23,8 +26,9 @@ public:
     Config();
     ~Config();
 
-    void                set(const std::string &key, const std::string &value);
-    const std::string   &get(const std::string &key);
+    const std::map<std::string, std::string>    &get_map();
+    void                                        set(const std::string &key, const std::string &value);
+    const std::string                           &get(const std::string &key);
 
 private:
 
