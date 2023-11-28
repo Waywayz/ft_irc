@@ -6,7 +6,7 @@
 /*   By: romain <romain@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 08:32:19 by romain            #+#    #+#             */
-/*   Updated: 2023/11/28 09:51:00 by romain           ###   ########.fr       */
+/*   Updated: 2023/11/28 10:33:35 by romain           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,21 +18,16 @@ Channel::Channel(const std::string &name, const std::string &key, Client *admin)
 Channel::~Channel() {}
 
 std::string Channel::get_name() const { return _name; }
-
 Client *Channel::get_admin() const { return _admin; }
 
 std::string Channel::get_key() const { return _key; }
-
 size_t Channel::get_limit() const { return _limit; }
-
 bool Channel::ext_msg() const { return _ext_msg; }
 
 size_t Channel::get_size() const { return _clients.size(); }
 
 void Channel::set_key(std::string key) { _key = key; }
-
 void Channel::set_limit(size_t limit) { _limit = limit; }
-
 void Channel::set_ext_msg(bool flag) { _ext_msg = flag; }
 
 std::vector<std::string> Channel::get_nicknames()
