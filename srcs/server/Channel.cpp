@@ -6,37 +6,37 @@
 /*   By: romain <romain@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 08:32:19 by romain            #+#    #+#             */
-/*   Updated: 2023/11/28 09:36:30 by romain           ###   ########.fr       */
+/*   Updated: 2023/11/28 09:51:00 by romain           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Channel.hpp"
 
-Channel::Channel(const std::string& name, const std::string& key, Client* admin)
+Channel::Channel(const std::string &name, const std::string &key, Client *admin)
     : _name(name), _admin(admin), _key(key), _limit(0), _ext_msg(false) {}
 
 Channel::~Channel() {}
 
-std::string                 Channel::get_name() const { return _name; }
+std::string Channel::get_name() const { return _name; }
 
-Client*                     Channel::get_admin() const { return _admin; }
+Client *Channel::get_admin() const { return _admin; }
 
-std::string                 Channel::get_key() const { return _key; }
+std::string Channel::get_key() const { return _key; }
 
-size_t                      Channel::get_limit() const { return _limit; }
+size_t Channel::get_limit() const { return _limit; }
 
-bool                        Channel::ext_msg() const { return _ext_msg; }
+bool Channel::ext_msg() const { return _ext_msg; }
 
-size_t                      Channel::get_size() const { return _clients.size(); }
+size_t Channel::get_size() const { return _clients.size(); }
 
-void                        Channel::set_key(std::string key) { _key = key; }
+void Channel::set_key(std::string key) { _key = key; }
 
-void                        Channel::set_limit(size_t limit) { _limit = limit; }
+void Channel::set_limit(size_t limit) { _limit = limit; }
 
-void                        Channel::set_ext_msg(bool flag) { _ext_msg = flag; }
+void Channel::set_ext_msg(bool flag) { _ext_msg = flag; }
 
-
-std::vector<std::string>    Channel::get_nicknames() {
+std::vector<std::string> Channel::get_nicknames()
+{
     std::vector<std::string> nicknames;
 
     client_iterator it_b = _clients.begin();
@@ -44,7 +44,7 @@ std::vector<std::string>    Channel::get_nicknames() {
 
     while (it_b != it_e)
     {
-        Client* client = *it_b;
+        Client *client = *it_b;
 
         std::string nick = (client == _admin ? "@" : "") + client->get_nickname();
         nicknames.push_back(nick);
@@ -55,7 +55,8 @@ std::vector<std::string>    Channel::get_nicknames() {
     return nicknames;
 }
 
-void                        Channel::broadcast(const std::string& message) {
+void Channel::broadcast(const std::string &message)
+{
     client_iterator it_b = _clients.begin();
     client_iterator it_e = _clients.end();
 
@@ -66,7 +67,8 @@ void                        Channel::broadcast(const std::string& message) {
     }
 }
 
-void                        Channel::broadcast(const std::string& message, Client* exclude) {
+void Channel::broadcast(const std::string &message, Client *exclude)
+{
     client_iterator it_b = _clients.begin();
     client_iterator it_e = _clients.end();
 
@@ -83,11 +85,13 @@ void                        Channel::broadcast(const std::string& message, Clien
     }
 }
 
-void                        Channel::add_client(Client* client) {
+void Channel::add_client(Client *client)
+{
     _clients.push_back(client);
 }
 
-void                        Channel::remove_client(Client* client) {
+void Channel::remove_client(Client *client)
+{
     client_iterator it_b = _clients.begin();
     client_iterator it_e = _clients.end();
 
@@ -95,7 +99,7 @@ void                        Channel::remove_client(Client* client) {
     {
         if (*it_b == client)
             _clients.erase(it_b);
-        
+
         it_b++;
     }
 
@@ -110,7 +114,8 @@ void                        Channel::remove_client(Client* client) {
     }
 }
 
-void                        Channel::kick(Client* client, Client* target, const std::string& reason) {
+void Channel::kick(Client *client, Client *target, const std::string &reason)
+{
     this->broadcast(RPL_KICK(client->get_prefix(), _name, target->get_nickname(), reason));
     this->remove_client(target);
 
