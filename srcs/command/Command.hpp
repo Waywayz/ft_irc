@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Command.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rovillar <rovillar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: romain <romain@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/08 04:49:59 by rovillar          #+#    #+#             */
-/*   Updated: 2023/11/08 04:50:00 by rovillar         ###   ########.fr       */
+/*   Updated: 2023/11/28 09:37:44 by romain           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,7 @@ class Command
 
     public:
 
-        // Sans explicit, cela pourrait être implicite
         // Command cmd = &server; // Erreur si explicit est présent
-        // Avec explicit, doit être explicite
         explicit Command(Server* srv, bool auth = true);
         virtual ~Command();
 
