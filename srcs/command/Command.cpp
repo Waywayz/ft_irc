@@ -10,27 +10,10 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef CMD_HPP
-# define CMD_HPP
+#include "Command.hpp"
 
-# include <string>
+Command::Command(Server* srv, bool auth) :_srv(srv), _auth(auth) {}
 
-class Client;
+Command::~Command() {}
 
-class Server;
-
-class Command
-{
-private:
-
-    Command();
-    Command(const Command &src);
-	Command	&operator=(const Command &src);
-    
-public:
-
-    Command(const std::string &line, Client *sender);
-    ~Command();
-};
-
-#endif
+bool    Command::auth_required() const { return _auth; }
