@@ -6,14 +6,22 @@
 /*   By: romain <romain@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 10:20:54 by romain            #+#    #+#             */
-/*   Updated: 2023/11/28 10:31:08 by romain           ###   ########.fr       */
+/*   Updated: 2023/12/06 18:20:47 by romain           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CLIENT_HPP
 #define CLIENT_HPP
 
+#include <sys/socket.h>
+#include <sys/poll.h>
+#include <string>
+#include <vector>
+
 class Client;
+
+#include "Channel.hpp"
+#include "response.hpp"
 
 enum ClientState
 {

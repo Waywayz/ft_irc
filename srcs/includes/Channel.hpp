@@ -6,7 +6,7 @@
 /*   By: romain <romain@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 08:32:22 by romain            #+#    #+#             */
-/*   Updated: 2023/11/28 09:50:56 by romain           ###   ########.fr       */
+/*   Updated: 2023/12/06 18:24:37 by romain           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,9 @@
 #define CHANNEL_HPP
 
 class Channel;
+
+#include "Client.hpp"
+#include "response.hpp"
 
 class Channel
 {
@@ -57,6 +60,6 @@ public:
     void remove_client(Client *client);
 
     void kick(Client *client, Client *target, const std::string &reason);
-}
+};
 
 #endif
