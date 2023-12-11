@@ -6,7 +6,7 @@
 /*   By: romain <romain@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/08 04:49:59 by rovillar          #+#    #+#             */
-/*   Updated: 2023/12/06 18:25:34 by romain           ###   ########.fr       */
+/*   Updated: 2023/12/11 13:13:32 by romain           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 
 class Command;
 
-#include "Client.hpp"
+#include "Server.hpp"
 
 class Command // need to get some value from server !!!!
 {
