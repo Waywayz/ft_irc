@@ -6,7 +6,7 @@
 /*   By: romain <romain@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 08:32:22 by romain            #+#    #+#             */
-/*   Updated: 2023/12/06 18:24:37 by romain           ###   ########.fr       */
+/*   Updated: 2023/12/11 13:24:20 by romain           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 class Channel;
 
+#include "Server.hpp"
 #include "Client.hpp"
 #include "response.hpp"
 
