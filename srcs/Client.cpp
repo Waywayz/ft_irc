@@ -13,7 +13,13 @@
 #include "Client.hpp"
 
 Client::Client(int fd, int port, const std::string &hostname)
+<<<<<<< HEAD:srcs/Client.cpp
     : _fd(fd), _port(port), _hostname(hostname), _state(HANDSHAKE), _channel(0) {}
+=======
+    : _fd(fd), _port(port), _hostname(hostname), _state(HANDSHAKE), _channel(NULL)
+{
+}
+>>>>>>> main:srcs/server/Client.cpp
 
 Client::~Client() {}
 
@@ -33,13 +39,21 @@ std::string Client::get_prefix() const
     return _nickname + username + hostname;
 }
 
+<<<<<<< HEAD:srcs/Client.cpp
 std::vector<Channel *>Client::get_channel() const { return _channel; }
+=======
+Channel *Client::get_channel() const { return _channel; }
+>>>>>>> main:srcs/server/Client.cpp
 
 void Client::set_nickname(const std::string &nickname) { _nickname = nickname; }
 void Client::set_username(const std::string &username) { _username = username; }
 void Client::set_realname(const std::string &realname) { _realname = realname; }
 void Client::set_state(ClientState state) { _state = state; }
+<<<<<<< HEAD:srcs/Client.cpp
 //void Client::set_channel(Channel *channel) { _channel = channel; }
+=======
+void Client::set_channel(Channel *channel) { _channel = channel; }
+>>>>>>> main:srcs/server/Client.cpp
 
 bool Client::is_registered() const { return _state == REGISTERED; }
 
@@ -71,7 +85,11 @@ void Client::welcome()
 void Client::join(Channel *channel)
 {
     channel->add_client(this);
+<<<<<<< HEAD:srcs/Client.cpp
     _channel.push_back(channel);
+=======
+    _channel = channel;
+>>>>>>> main:srcs/server/Client.cpp
 
     std::string users = "";
     std::vector<std::string> nicknames = channel->get_nicknames();
@@ -91,6 +109,7 @@ void Client::join(Channel *channel)
     log(message);
 }
 
+<<<<<<< HEAD:srcs/Client.cpp
 /*
     Cette fonction n'est pas a faire je crois,
     et si jamais on doit la retouchee ca sera en iterant
@@ -105,6 +124,13 @@ void Client::leave() {
     channel_iterator    it_e = _channel->end();
 
     while ()
+=======
+void Client::leave()
+{
+    if (!_channel)
+        return;
+
+>>>>>>> main:srcs/server/Client.cpp
     const std::string name = _channel->get_name();
 
     _channel->broadcast(RPL_PART(get_prefix(), _channel->get_name()));
@@ -112,4 +138,8 @@ void Client::leave() {
 
     std::string message = _nickname + " has left the channel " + name;
     log(message);
+<<<<<<< HEAD:srcs/Client.cpp
 }*/
+=======
+}
+>>>>>>> main:srcs/server/Client.cpp

@@ -5,8 +5,18 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: romain <romain@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
+<<<<<<< HEAD
+<<<<<<<< HEAD:srcs/includes/Parser.hpp
 /*   Created: 2023/12/11 13:10:25 by romain            #+#    #+#             */
 /*   Updated: 2023/12/11 13:13:27 by romain           ###   ########.fr       */
+========
+/*   Created: 2023/11/08 04:49:56 by rovillar          #+#    #+#             */
+/*   Updated: 2023/12/11 13:13:41 by romain           ###   ########.fr       */
+>>>>>>>> main:srcs/command/Command.cpp
+=======
+/*   Created: 2023/12/11 13:10:25 by romain            #+#    #+#             */
+/*   Updated: 2023/12/11 13:13:27 by romain           ###   ########.fr       */
+>>>>>>> main
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +32,10 @@
 
 class Parser;
 
+<<<<<<< HEAD
+=======
+#include "Command.hpp"
+>>>>>>> main
 
 class Parser
 {

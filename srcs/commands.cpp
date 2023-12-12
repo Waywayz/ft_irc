@@ -31,7 +31,20 @@ recuperer le channel si il existe ou non.
     if (!channel) {
         channel = create_channel(name, pass, client);
     }
+<<<<<<< HEAD:srcs/commands.cpp
     if (channel->get_limit() > 0 && channel->get_size() >= channel->get_limit()) {
+=======
+
+    channel = _srv->get_channel(name);
+
+    if (!channel)
+    {
+        channel = _srv->create_channel(name, pass, client);
+    }
+
+    if (channel->get_limit() > 0 && channel->get_size() >= channel->get_limit())
+    {
+>>>>>>> main:srcs/command/Join.cpp
         client->reply(ERR_CHANNELISFULL(client->get_nickname(), name));
         return;
     }

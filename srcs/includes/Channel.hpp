@@ -15,10 +15,19 @@
 
 class Channel;
 
+<<<<<<< HEAD
 # include "Client.hpp"
 # include "response.hpp"
 
 class Channel {
+=======
+#include "Server.hpp"
+#include "Client.hpp"
+#include "response.hpp"
+
+class Channel
+{
+>>>>>>> main
 
     typedef std::vector<Client *>::iterator client_iterator;
 
@@ -58,7 +67,11 @@ class Channel {
         void add_client(Client *client);
         void remove_client(Client *client);
 
+<<<<<<< HEAD
         void kick(Client *client, Client *target, const std::string &reason);
+=======
+    void kick(Client *client, Client *target, const std::string &reason);
+>>>>>>> main
 };
 
 #endif
