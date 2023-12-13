@@ -13,13 +13,13 @@
 
 #include "Channel.hpp"
 #include "Client.hpp"
-#define nullptr 0
+// #define nullptr 0
 
 typedef std::vector<Channel *>::iterator channel_iterator;
 typedef std::map<int, Client *>::iterator client_iterator;
 
-std::vector<Channel *> channels;
-std::map<int, Client *> clients;
+extern std::vector<Channel *> channels;
+extern std::map<int, Client *> clients;
 
 int setup_server(sockaddr_in *serv_addr, char *port);
 int init_fd(fd_set *readfds, int serv_socket, std::map<int, Client *> &clients);

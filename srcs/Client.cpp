@@ -6,7 +6,7 @@
 /*   By: romain <romain@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 10:25:40 by romain            #+#    #+#             */
-/*   Updated: 2023/12/06 18:20:56 by romain           ###   ########.fr       */
+/*   Updated: 2023/12/13 15:33:03 by romain           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,13 +33,13 @@ std::string Client::get_prefix() const
     return _nickname + username + hostname;
 }
 
-std::vector<Channel *>Client::get_channel() const { return _channel; }
+std::vector<Channel *> Client::get_channel() const { return _channel; }
 
 void Client::set_nickname(const std::string &nickname) { _nickname = nickname; }
 void Client::set_username(const std::string &username) { _username = username; }
 void Client::set_realname(const std::string &realname) { _realname = realname; }
 void Client::set_state(ClientState state) { _state = state; }
-//void Client::set_channel(Channel *channel) { _channel = channel; }
+// void Client::set_channel(Channel *channel) { _channel = channel; }
 
 bool Client::is_registered() const { return _state == REGISTERED; }
 
@@ -64,7 +64,7 @@ void Client::welcome()
     this->reply(RPL_WELCOME(_nickname));
 
     char message[100];
-    sprintf(message, "%s:%d is now known as %s.", _hostname.c_str(), _port, _nickname.c_str());
+    snprintf(message, sizeof(message), "%s:%d is now known as %s.", _hostname.c_str(), _port, _nickname.c_str());
     log(message);
 }
 

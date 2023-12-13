@@ -12,7 +12,7 @@ A faire:
     TOPIC
 */
 
-//version with map
+// version with map
 void receive_datas(fd_set *readfds, std::map<int, Client *> &clients)
 {
     for (std::map<int, Client *>::iterator it = clients.begin(); it != clients.end();)
@@ -110,6 +110,12 @@ void receive_datas(fd_set *readfds, std::map<int, Client *> &clients)
 //     }
 // }
 
+// A CHANGER
+// declaration obligatoire pour eviter erreur de compilation
+
+std::vector<Channel *> channels;
+std::map<int, Client *> clients;
+
 int main(int ac, char **av)
 {
 
@@ -141,8 +147,9 @@ int main(int ac, char **av)
         if (FD_ISSET(serv_socket, &readfds))
         {
             int newCliSocket = accept(serv_socket, nullptr, nullptr);
-            Client newCli(newCliSocket, atoi(av[1]), "");
-            clients.insert(std::make_pair(newCliSocket, newCli));
+            // Client newCli(newCliSocket, atoi(av[1]), "");
+            clients.insert(std::make_pair(newCliSocket, new Client(newCliSocket, atoi(av[1]), "")));
+            ;
             // clients.push_back(newCli);
             std::cout << "New connection accepted." << std::endl;
         }
