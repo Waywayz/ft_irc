@@ -28,16 +28,16 @@ int setup_server(sockaddr_in *serv_addr, char *port) {
     return (serv_socket);
 }
 
-int init_fd(fd_set *readfds, int serv_socket, std::vector<int> &clientSockets) {
+int init_fd(fd_set *readfds, int serv_socket, std::vector<Client> &clients) {
     
     int max_fd = serv_socket;
 
     FD_ZERO(readfds);
     FD_SET(serv_socket, readfds);
-    for (std::vector<int>::iterator it = clientSockets.begin(); it != clientSockets.end();) {
-        FD_SET(*it, readfds);
-        if (*it > max_fd)
-            max_fd = *it;
+    for (std::vector<Client>::iterator it = clients.begin(); it != clients.end();) {
+        FD_SET(it->get_fd(), readfds);
+        if (it->get_fd() > max_fd)
+            max_fd = it->get_fd();
         ++it;
     }
     return (max_fd);

@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #ifndef CLIENT_HPP
-#define CLIENT_HPP
+# define CLIENT_HPP
 
 #include <sys/socket.h>
 #include <sys/poll.h>
@@ -48,11 +48,10 @@ class Client {
         std::vector<Channel *> _channel;
 
 
-        Client();
-        Client(const Client &src);
 
     public:
         Client(int fd, int port, const std::string &hostname);
+        //Client(const Client &src);
         ~Client();
 
         int get_fd() const;
