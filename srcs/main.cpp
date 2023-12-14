@@ -149,7 +149,6 @@ int main(int ac, char **av)
             int newCliSocket = accept(serv_socket, nullptr, nullptr);
             // Client newCli(newCliSocket, atoi(av[1]), "");
             clients.insert(std::make_pair(newCliSocket, new Client(newCliSocket, atoi(av[1]), "")));
-            ;
             // clients.push_back(newCli);
             std::cout << "New connection accepted." << std::endl;
         }

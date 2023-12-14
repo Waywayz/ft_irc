@@ -6,7 +6,7 @@
 /*   By: romain <romain@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 16:37:34 by romain            #+#    #+#             */
-/*   Updated: 2023/12/13 15:42:59 by romain           ###   ########.fr       */
+/*   Updated: 2023/12/14 02:16:53 by romain           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ void kick(Client *client, std::vector<std::string> args)
         return;
     }
 
-        // if everything is fine
+    // if everything is fine
     channel->kick(client, dest, reason);
 }
 
@@ -160,6 +160,23 @@ void mode(Client *client, std::vector<std::string> args)
             channel->broadcast(RPL_MODE(client->get_prefix(), channel->get_name(), (active ? "+k" : "-k"), (active ? args[p] : "")));
             p += active ? 1 : 0;
             break;
+        }
+        case 'o':
+        {
+            Client *dest = get_client(args[p]);
+            if (!dest)
+            {
+                client->reply(ERR_NOSUCHNICK(client->get_nickname(), args[p]));
+                return;
+            }
+
+            if (!channel->has_member(dest))
+            {
+                client->reply(ERR_USERNOTINCHANNEL(client->get_nickname(), dest->get_nickname(), channel->get_name()));
+                return;
+            }
+
+            channel->add_operator(dest);
         }
         default:
             break;
