@@ -6,7 +6,7 @@
 /*   By: romain <romain@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 16:37:34 by romain            #+#    #+#             */
-/*   Updated: 2023/12/15 03:26:12 by romain           ###   ########.fr       */
+/*   Updated: 2023/12/15 03:45:02 by romain           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,68 @@ void kick(Client *client, std::vector<std::string> args)
 
     // if everything is fine
     channel->kick(client, dest, reason);
+}
+
+void pass(Client *client, std::vector<std::string> args)
+{
+    if (args.empty())
+    {
+        client->reply(ERR_NEEDMOREPARAMS(client->get_nickname(), "PASS"));
+        return;
+    }
+
+    if (client->is_registered())
+    {
+        client->reply(ERR_ALREADYREGISTERED(client->get_nickname()));
+        return;
+    }
+
+    if (get_password() != args[0].substr(args[0][0] == ':' ? 1 : 0))
+    {
+        client->reply(ERR_PASSWDMISMATCH(client->get_nickname()));
+        return;
+    }
+
+    client->set_state(LOGIN);
+}
+
+void user(Client *client, std::vector<std::string> args)
+{
+    if (client->is_registered())
+    {
+        client->reply(ERR_ALREADYREGISTERED(client->get_nickname()));
+        return;
+    }
+
+    if (args.size() < 4)
+    {
+        client->reply(ERR_NEEDMOREPARAMS(client->get_nickname(), "USER"));
+        return;
+    }
+
+    client->set_username(args[0]);
+    client->set_realname(args[3]);
+    client->welcome();
+}
+
+void nick(Client *client, std::vector<std::string> args)
+{
+    if (args.empty() || args[0].empty())
+    {
+        client->reply(ERR_NONICKNAMEGIVEN(client->get_nickname()));
+        return;
+    }
+
+    std::string nickname = args[0];
+
+    if (get_client(nickname))
+    {
+        client->reply(ERR_NICKNAMEINUSE(client->get_nickname()));
+        return;
+    }
+
+    client->set_nickname(nickname);
+    client->welcome();
 }
 
 void mode(Client *client, std::vector<std::string> args)

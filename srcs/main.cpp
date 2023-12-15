@@ -115,6 +115,7 @@ void receive_datas(fd_set *readfds, std::map<int, Client *> &clients)
 
 std::vector<Channel *> channels;
 std::map<int, Client *> clients;
+std::string password;
 
 int main(int ac, char **av)
 {
@@ -129,6 +130,9 @@ int main(int ac, char **av)
         std::cerr << "./irc <port> <password>" << std::endl;
         return (1);
     }
+
+    // On stock le password
+    set_password(av[2]);
 
     int serv_socket = setup_server(&serv_addr, av[1]);
     if (serv_socket == 1)
