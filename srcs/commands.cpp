@@ -6,7 +6,7 @@
 /*   By: romain <romain@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 16:37:34 by romain            #+#    #+#             */
-/*   Updated: 2023/12/14 02:16:53 by romain           ###   ########.fr       */
+/*   Updated: 2023/12/15 03:26:12 by romain           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,7 +138,7 @@ void mode(Client *client, std::vector<std::string> args)
         char prev_c = i > 0 ? args[1][i - 1] : '\0';
         bool active = prev_c == '+';
 
-        // add o + t
+        // add t
         switch (c)
         {
         case 'i':
@@ -176,7 +176,10 @@ void mode(Client *client, std::vector<std::string> args)
                 return;
             }
 
-            channel->add_operator(dest);
+            channel->set_operator(active, dest);
+            channel->broadcast(RPL_MODE(client->get_prefix(), channel->get_name(), (active ? "+o" : "-o"), (active ? args[p] : "")));
+            // p += active ? 1 : 0;
+            break;
         }
         default:
             break;

@@ -6,7 +6,7 @@
 /*   By: romain <romain@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 08:32:22 by romain            #+#    #+#             */
-/*   Updated: 2023/12/14 01:28:46 by romain           ###   ########.fr       */
+/*   Updated: 2023/12/15 03:22:23 by romain           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,15 +57,16 @@ public:
     void set_key(std::string key);
     void set_limit(size_t limit);
     void set_invit_only(bool flag);
+    void set_operator(bool active, Client *client);
     void set_topic(const std::string &topic, Client *client);
 
     void broadcast(const std::string &message);
     void broadcast(const std::string &message, Client *exclude);
 
     void add_client(Client *client);
-    void add_operator(Client *client);
+    // void add_operator(Client *client);
     void remove_client(Client *client);
-    void remove_operator(Client *client);
+    // void remove_operator(Client *client);
 
     void kick(Client *client, Client *target, const std::string &reason);
 };
