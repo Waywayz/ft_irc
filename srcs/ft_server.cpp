@@ -109,12 +109,14 @@ std::string get_password()
     return password;
 }
 
-Channel *create_channel(const std::string &name, const std::string &key, Client *client, std::vector<Channel *> channel)
+// need to add fonction pour delete un channel
+
+Channel *create_channel(const std::string &name, const std::string &key, Client *client)
 {
     Channel *chan = new Channel(name, key, client);
     if (!chan)
         return (NULL);
-    channel.push_back(chan);
+    channels.push_back(chan);
 
     return (chan);
 }
