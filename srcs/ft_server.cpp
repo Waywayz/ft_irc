@@ -1,4 +1,3 @@
-
 #include "IRC.hpp"
 
 int setup_server(sockaddr_in *serv_addr, char *port)
@@ -32,8 +31,7 @@ int setup_server(sockaddr_in *serv_addr, char *port)
     return (serv_socket);
 }
 
-
-//version with map
+// version with map
 int init_fd(fd_set *readfds, int serv_socket, std::map<int, Client *> &clients)
 {
     int max_fd = serv_socket;
@@ -100,12 +98,24 @@ Client *get_client(const std::string &nickname)
     return NULL;
 }
 
-Channel *create_channel(const std::string &name, const std::string &key, Client *client, std::vector<Channel *> channel)
+void set_password(std::string pass)
+{
+    password = pass;
+}
+
+std::string get_password()
+{
+    return password;
+}
+
+// need to add fonction pour delete un channel
+
+Channel *create_channel(const std::string &name, const std::string &key, Client *client)
 {
     Channel *chan = new Channel(name, key, client);
     if (!chan)
         return (NULL);
-    channel.push_back(chan);
+    channels.push_back(chan);
 
     return (chan);
 }

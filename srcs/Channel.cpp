@@ -6,14 +6,14 @@
 /*   By: romain <romain@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 08:32:19 by romain            #+#    #+#             */
-/*   Updated: 2023/12/14 01:28:37 by romain           ###   ########.fr       */
+/*   Updated: 2023/12/15 03:22:27 by romain           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Channel.hpp"
 
 Channel::Channel(const std::string &name, const std::string &key, Client *admin)
-    : _name(name), _topic(NULL), _admin(admin), _key(key), _limit(0), _invit_only(false) {}
+    : _name(name), _topic(""), _admin(admin), _key(key), _limit(0), _invit_only(false) {}
 
 Channel::~Channel() {}
 
@@ -85,25 +85,55 @@ void Channel::add_client(Client *client)
     _clients.push_back(client);
 }
 
-void Channel::add_operator(Client *client)
-{
-    _operators.push_back(client);
-}
+// void Channel::add_operator(Client *client)
+// {
+//     _operators.push_back(client);
+// }
 
-void Channel::remove_operator(Client *client)
-{
-    client_iterator it_b = _operators.begin();
-    client_iterator it_e = _operators.end();
+// void Channel::remove_operator(Client *client)
+// {
+//     client_iterator it_b = _operators.begin();
+//     client_iterator it_e = _operators.end();
 
-    while (it_b != it_e)
+//     while (it_b != it_e)
+//     {
+//         if (*it_b == client)
+//         {
+//             _operators.erase(it_b);
+//             break;
+//         }
+
+//         it_b++;
+//     }
+// }
+
+void Channel::set_operator(bool active, Client *client)
+{
+    if (active)
     {
-        if (*it_b == client)
+        if (!is_operator(client))
         {
-            _operators.erase(it_b);
-            break;
+            _operators.push_back(client);
+            return;
         }
+        return;
+    }
 
-        it_b++;
+    else
+    {
+        client_iterator it_b = _operators.begin();
+        client_iterator it_e = _operators.end();
+
+        while (it_b != it_e)
+        {
+            if (*it_b == client)
+            {
+                _operators.erase(it_b);
+                break;
+            }
+
+            it_b++;
+        }
     }
 }
 

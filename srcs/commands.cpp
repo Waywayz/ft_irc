@@ -6,7 +6,7 @@
 /*   By: romain <romain@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 16:37:34 by romain            #+#    #+#             */
-/*   Updated: 2023/12/14 02:16:53 by romain           ###   ########.fr       */
+/*   Updated: 2023/12/15 04:19:49 by romain           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,29 +20,26 @@ void join(Client *client, std::vector<std::string> args)
         client->reply(ERR_NEEDMOREPARAMS(client->get_nickname(), "JOIN"));
         return;
     }
-    /*
-        std::string name = args[0];
-        std::string pass = args.size() > 1 ? args[1] : "";
+    std::string name = args[0];
+    std::string pass = args.size() > 1 ? args[1] : "";
 
-    Recuperer le vector channel via les arguments et get dessus pour
-    recuperer le channel si il existe ou non.
-        ||
-        \/
-        Channel *channel = get_channel(name);
+    Channel *channel = get_channel(name);
+    if (!channel)
+        channel = create_channel(name, pass, client);
 
-        if (!channel) {
-            channel = create_channel(name, pass, client);
-        }
-        if (channel->get_limit() > 0 && channel->get_size() >= channel->get_limit()) {
-            client->reply(ERR_CHANNELISFULL(client->get_nickname(), name));
-            return;
-        }
-        if (channel->get_key() != pass) {
-            client->reply(ERR_BADCHANNELKEY(client->get_nickname(), name));
-            return;
-        }
-        client->join(channel);
-    */
+    if (channel->get_size() >= channel->get_limit())
+    {
+        client->reply(ERR_CHANNELISFULL(client->get_nickname(), name));
+        return;
+    }
+
+    if (channel->get_key() != pass)
+    {
+        client->reply(ERR_BADCHANNELKEY(client->get_nickname(), name));
+        return;
+    }
+
+    client->join(channel);
 }
 
 void kick(Client *client, std::vector<std::string> args)
@@ -103,6 +100,71 @@ void kick(Client *client, std::vector<std::string> args)
     channel->kick(client, dest, reason);
 }
 
+void pass(Client *client, std::vector<std::string> args)
+{
+    if (args.empty())
+    {
+        client->reply(ERR_NEEDMOREPARAMS(client->get_nickname(), "PASS"));
+        return;
+    }
+
+    if (client->is_registered())
+    {
+        client->reply(ERR_ALREADYREGISTERED(client->get_nickname()));
+        return;
+    }
+
+    if (get_password() != args[0].substr(args[0][0] == ':' ? 1 : 0))
+    {
+        client->reply(ERR_PASSWDMISMATCH(client->get_nickname()));
+        return;
+    }
+
+    client->set_state(LOGIN);
+}
+
+void user(Client *client, std::vector<std::string> args)
+{
+    std::cout << "dedans" << std::endl;
+    if (client->is_registered())
+    {
+        std::cout << "registered" << std::endl;
+        client->reply(ERR_ALREADYREGISTERED(client->get_nickname()));
+        return;
+    }
+
+    if (args.size() < 4)
+    {
+        std::cout << "needparams" << std::endl;
+        client->reply(ERR_NEEDMOREPARAMS(client->get_nickname(), "USER"));
+        return;
+    }
+
+    client->set_username(args[0]);
+    client->set_realname(args[3]);
+    client->welcome();
+}
+
+void nick(Client *client, std::vector<std::string> args)
+{
+    if (args.empty() || args[0].empty())
+    {
+        client->reply(ERR_NONICKNAMEGIVEN(client->get_nickname()));
+        return;
+    }
+
+    std::string nickname = args[0];
+
+    if (get_client(nickname))
+    {
+        client->reply(ERR_NICKNAMEINUSE(client->get_nickname()));
+        return;
+    }
+
+    client->set_nickname(nickname);
+    client->welcome();
+}
+
 void mode(Client *client, std::vector<std::string> args)
 {
     // hanling errors
@@ -128,8 +190,6 @@ void mode(Client *client, std::vector<std::string> args)
         return;
     }
 
-    // changing the mode
-
     int i = 0, p = 2;
     char c;
 
@@ -138,7 +198,7 @@ void mode(Client *client, std::vector<std::string> args)
         char prev_c = i > 0 ? args[1][i - 1] : '\0';
         bool active = prev_c == '+';
 
-        // add o + t
+        // add t
         switch (c)
         {
         case 'i':
@@ -176,7 +236,10 @@ void mode(Client *client, std::vector<std::string> args)
                 return;
             }
 
-            channel->add_operator(dest);
+            channel->set_operator(active, dest);
+            channel->broadcast(RPL_MODE(client->get_prefix(), channel->get_name(), (active ? "+o" : "-o"), (active ? args[p] : "")));
+            // p += active ? 1 : 0;
+            break;
         }
         default:
             break;
