@@ -6,7 +6,7 @@
 /*   By: romain <romain@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 16:37:34 by romain            #+#    #+#             */
-/*   Updated: 2023/12/20 01:11:03 by romain           ###   ########.fr       */
+/*   Updated: 2023/12/20 01:33:52 by romain           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ void join(Client *client, std::vector<std::string> args)
         client->reply(ERR_NEEDMOREPARAMS(client->get_nickname(), "JOIN"));
         return;
     }
-
     std::string name = args[0];
     std::string pass = args.size() > 1 ? args[1] : "";
 
