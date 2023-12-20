@@ -19,6 +19,7 @@ typedef void (*cmds)(Client*, std::vector<std::string>);
 std::vector<std::pair<std::string, cmds> > commands;
 commands.push_back(std::make_pair("JOIN", static_cast<cmds>(&join)));
 commands.push_back(std::make_pair("KICK", static_cast<cmds>(&kick)));
+commands.push_back(std::make_pair("NICK", static_cast<cmds>(&nick)));
 commands.push_back(std::make_pair("PASS", static_cast<cmds>(&pass)));
 commands.push_back(std::make_pair("USER", static_cast<cmds>(&user)));
 commands.push_back(std::make_pair("MODE", static_cast<cmds>(&mode)));

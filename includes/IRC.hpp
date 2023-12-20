@@ -38,6 +38,7 @@ void    parse_n_exec(char *buffer, Client *client);
 
 void join(Client *client, std::vector<std::string> args);
 void kick(Client *client, std::vector<std::string> args);
+void nick(Client *client, std::vector<std::string> args);
 void pass(Client *client, std::vector<std::string> args);
 void user(Client *client, std::vector<std::string> args);
 void mode(Client *client, std::vector<std::string> args);
