@@ -6,7 +6,7 @@
 /*   By: romain <romain@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 16:37:34 by romain            #+#    #+#             */
-/*   Updated: 2023/12/20 17:13:26 by romain           ###   ########.fr       */
+/*   Updated: 2023/12/20 17:24:38 by romain           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 void join(Client *client, std::vector<std::string> args)
 {
+    // syntax: JOIN <channels> [<keys>]
 
     if (args.empty())
     {
@@ -23,7 +24,7 @@ void join(Client *client, std::vector<std::string> args)
     std::string name = args[0];
     std::string pass = args.size() > 1 ? args[1] : "";
 
-    if (args[0][0] != '#')
+    if (name[0] != '#')
     {
         client->reply(ERR_NOSUCHCHANNEL(client->get_nickname(), name));
         return;
@@ -50,6 +51,8 @@ void join(Client *client, std::vector<std::string> args)
 
 void kick(Client *client, std::vector<std::string> args)
 {
+    // syntax: KICK <channel> <client> :[<message>]
+
     if (args.size() < 2)
     {
         client->reply(ERR_NEEDMOREPARAMS(client->get_nickname(), "KICK"));
@@ -108,6 +111,8 @@ void kick(Client *client, std::vector<std::string> args)
 
 void pass(Client *client, std::vector<std::string> args)
 {
+    // syntax: PASS <password>
+
     if (args.empty())
     {
         client->reply(ERR_NEEDMOREPARAMS(client->get_nickname(), "PASS"));
@@ -175,6 +180,9 @@ void nick(Client *client, std::vector<std::string> args)
 
 void mode(Client *client, std::vector<std::string> args)
 {
+    // syntax:  MODE <nickname> <flags> (user)
+    //          MODE <channel> <flags> [<args>]
+
     // hanling errors
 
     if (args.size() < 2)
@@ -258,6 +266,8 @@ void mode(Client *client, std::vector<std::string> args)
 
 void privMsg(Client *client, std::vector<std::string> args)
 {
+    // syntax: PRIVMSG <msgtarget> :<message>
+
     if (args.size() < 2 || args[0].empty() || args[1].empty())
     {
         client->reply(ERR_NEEDMOREPARAMS(client->get_nickname(), "PRIVMSG"));
