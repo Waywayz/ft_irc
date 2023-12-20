@@ -6,7 +6,7 @@
 /*   By: romain <romain@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 16:37:34 by romain            #+#    #+#             */
-/*   Updated: 2023/12/20 04:43:47 by romain           ###   ########.fr       */
+/*   Updated: 2023/12/20 17:13:26 by romain           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,15 @@ void join(Client *client, std::vector<std::string> args)
     std::string name = args[0];
     std::string pass = args.size() > 1 ? args[1] : "";
 
+    if (args[0][0] != '#')
+    {
+        client->reply(ERR_NOSUCHCHANNEL(client->get_nickname(), name));
+        return;
+    }
+
     Channel *channel = get_channel(name);
     if (!channel)
-    {
         channel = create_channel(name, pass, client);
-        std::cout << "create channel" << std::endl;
-    }
 
     if (channel->get_limit() > 0 && channel->get_size() >= channel->get_limit())
     {
@@ -74,7 +77,7 @@ void kick(Client *client, std::vector<std::string> args)
     }
 
     Channel *channel = get_channel(name);
-    if (!channel || channel->get_name() != name)
+    if (!channel || !channel->has_member(client))
     {
         client->reply(ERR_NOTONCHANNEL(client->get_nickname(), name));
         return;
@@ -128,6 +131,8 @@ void pass(Client *client, std::vector<std::string> args)
 
 void user(Client *client, std::vector<std::string> args)
 {
+    // stntax: USER <username> <hostname> <servername> <realname>
+
     std::cout << "dedans" << std::endl;
     if (client->is_registered())
     {
@@ -289,34 +294,13 @@ void privMsg(Client *client, std::vector<std::string> args)
             return;
         }
 
-        // a refaire
+        if (!channel->has_member(client))
+        {
+            client->reply(ERR_CANNOTSENDTOCHAN(client->get_nickname(), target));
+            return;
+        }
 
-        // // channel is not for external messages
-        // if (!channel->invit_only())
-        // {
-        //     std::vector<std::string> nicknames = channel->get_nicknames();
-
-        //     std::vector<std::string>::iterator it = nicknames.begin();
-        //     std::vector<std::string>::iterator end = nicknames.end();
-
-        //     // check if client is in the channel
-        //     while (it != end)
-        //     {
-        //         if (*it == client->get_nickname())
-        //             break;
-
-        //         it++;
-        //     }
-
-        //     // if not in channel
-        //     if (it == end)
-        //     {
-        //         client->reply(ERR_CANNOTSENDTOCHAN(client->get_nickname(), target));
-        //         return;
-        //     }
-        // }
-
-        // channel->broadcast(RPL_PRIVMSG(client->get_prefix(), target, message), client);
+        channel->broadcast(RPL_PRIVMSG(client->get_prefix(), target, message), client);
         return;
     }
 

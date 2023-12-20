@@ -3,49 +3,64 @@
 /*
     Remplacer la classe par juste qques fonctions:
         tableau de paires : string / pointeur sur fonction
-    si mot du parsing = commande[x][1](str) 
-    alors exec command[x][2](*f())    
+    si mot du parsing = commande[x][1](str)
+    alors exec command[x][2](*f())
 
-    Le parser doit while tant qu'il y a des lignes 
+    Le parser doit while tant qu'il y a des lignes
     dans le buffer <!>
 
-        
+
 */
 
+bool auth_required(const std::string &command)
+{
+    return !(command == "USER" || command == "NICK" || command == "PASS" || command == "QUIT");
+}
 
-void    parse_n_exec(char *buffer, Client *client) {
+void parse_n_exec(char *buffer, Client *client)
+{
 
-typedef void (*cmds)(Client*, std::vector<std::string>);
-std::vector<std::pair<std::string, cmds> > commands;
-commands.push_back(std::make_pair("JOIN", static_cast<cmds>(&join)));
-commands.push_back(std::make_pair("KICK", static_cast<cmds>(&kick)));
-commands.push_back(std::make_pair("NICK", static_cast<cmds>(&nick)));
-commands.push_back(std::make_pair("PASS", static_cast<cmds>(&pass)));
-commands.push_back(std::make_pair("USER", static_cast<cmds>(&user)));
-commands.push_back(std::make_pair("MODE", static_cast<cmds>(&mode)));
-commands.push_back(std::make_pair("PRIVMSG", static_cast<cmds>(&privMsg)));
-commands.push_back(std::make_pair("TOPIC", static_cast<cmds>(&topic)));
+    typedef void (*cmds)(Client *, std::vector<std::string>);
+    std::vector<std::pair<std::string, cmds> > commands;
+    commands.push_back(std::make_pair("JOIN", static_cast<cmds>(&join)));
+    commands.push_back(std::make_pair("KICK", static_cast<cmds>(&kick)));
+    commands.push_back(std::make_pair("NICK", static_cast<cmds>(&nick)));
+    commands.push_back(std::make_pair("PASS", static_cast<cmds>(&pass)));
+    commands.push_back(std::make_pair("USER", static_cast<cmds>(&user)));
+    commands.push_back(std::make_pair("MODE", static_cast<cmds>(&mode)));
+    commands.push_back(std::make_pair("PRIVMSG", static_cast<cmds>(&privMsg)));
+    commands.push_back(std::make_pair("TOPIC", static_cast<cmds>(&topic)));
 
     std::istringstream bufferStream(buffer);
     std::string line;
 
-    while (std::getline(bufferStream, line)) {
+    while (std::getline(bufferStream, line))
+    {
         std::istringstream lineStream(line);
         std::string command;
         lineStream >> command;
         std::cout << command << std::endl;
-        for (size_t i = 0; i < commands.size(); ++i) {
-            if (commands[i].first == command) {
+        for (size_t i = 0; i < commands.size(); ++i)
+        {
+            if (commands[i].first == command)
+            {
 
                 std::vector<std::string> args;
                 std::string arg;
-                while (lineStream >> arg) {
+                while (lineStream >> arg)
+                {
                     args.push_back(arg);
                 }
+                if (!client->is_registered() && auth_required(command))
+                {
+                    client->reply(ERR_NOTREGISTERED(client->get_nickname()));
+                    return;
+                }
                 commands[i].second(client, args);
-                break;
+                return;
             }
         }
+        client->reply(ERR_UNKNOWNCOMMAND(client->get_nickname(), command));
     }
 }
 
