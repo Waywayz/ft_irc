@@ -26,6 +26,8 @@ extern std::vector<Channel *> channels;
 extern std::map<int, Client *> clients;
 extern std::string password;
 
+extern std::string password;
+
 int setup_server(sockaddr_in *serv_addr, char *port);
 int init_fd(fd_set *readfds, int serv_socket, std::map<int, Client *> &clients);
 

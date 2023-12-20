@@ -71,6 +71,9 @@ int main(int ac, char **av)
     }
     set_password(av[2]);
 
+    // On stock le password
+    set_password(av[2]);
+
     int serv_socket = setup_server(&serv_addr, av[1]);
     if (serv_socket == 1)
         return (1);
