@@ -15,7 +15,7 @@
 
 #include "Channel.hpp"
 #include "Client.hpp"
-#define nullptr 0
+// #define nullptr 0
 
 typedef std::vector<Channel *>::iterator channel_iterator;
 typedef std::map<int, Client *>::iterator client_iterator;
@@ -24,8 +24,6 @@ typedef std::map<int, Client *>::iterator client_iterator;
 
 extern std::vector<Channel *> channels;
 extern std::map<int, Client *> clients;
-extern std::string password;
-
 extern std::string password;
 
 int setup_server(sockaddr_in *serv_addr, char *port);
