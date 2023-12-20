@@ -8,9 +8,10 @@ SRCS =	srcs/commands.cpp \
 		srcs/Channel.cpp	\
 		srcs/Client.cpp	\
 		srcs/ft_server.cpp		\
+		srcs/parser.cpp	\
 		srcs/main.cpp
 
-INCLUDES = -Isrcs/includes
+INCLUDES = -Iincludes
 
 OBJS = $(SRCS:.cpp=.o)
 

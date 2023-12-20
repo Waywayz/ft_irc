@@ -13,7 +13,7 @@
 #include "Channel.hpp"
 
 Channel::Channel(const std::string &name, const std::string &key, Client *admin)
-    : _name(name), _topic(NULL), _admin(admin), _key(key), _limit(0), _invit_only(false) {}
+    : _name(name), _topic(""), _admin(admin), _key(key), _limit(0), _invit_only(false) {}
 
 Channel::~Channel() {}
 

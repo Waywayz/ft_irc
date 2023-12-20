@@ -1,4 +1,3 @@
-
 #include "IRC.hpp"
 
 int setup_server(sockaddr_in *serv_addr, char *port)

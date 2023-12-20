@@ -47,8 +47,6 @@ class Client {
         ClientState _state;
         std::vector<Channel *> _channel;
 
-
-
     public:
         Client(int fd, int port, const std::string &hostname);
         //Client(const Client &src);
