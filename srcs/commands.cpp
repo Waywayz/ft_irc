@@ -6,7 +6,7 @@
 /*   By: romain <romain@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 16:37:34 by romain            #+#    #+#             */
-/*   Updated: 2023/12/20 01:35:59 by romain           ###   ########.fr       */
+/*   Updated: 2023/12/20 01:47:17 by romain           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void join(Client *client, std::vector<std::string> args)
     if (!channel)
         channel = create_channel(name, pass, client);
 
-    if (channel->get_size() >= channel->get_limit())
+    if (channel->get_limit() > 0 && channel->get_size() >= channel->get_limit())
     {
         client->reply(ERR_CHANNELISFULL(client->get_nickname(), name));
         return;
