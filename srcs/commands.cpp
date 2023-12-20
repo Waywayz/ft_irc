@@ -6,7 +6,7 @@
 /*   By: romain <romain@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 16:37:34 by romain            #+#    #+#             */
-/*   Updated: 2023/12/20 01:47:17 by romain           ###   ########.fr       */
+/*   Updated: 2023/12/20 01:52:48 by romain           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -328,44 +328,6 @@ void privMsg(Client *client, std::vector<std::string> args)
 
     dest->write(RPL_PRIVMSG(client->get_prefix(), target, message));
 }
-
-// void op(Client *client, std::vector<std::string> args)
-// {
-//     // Handling errors
-//     if (args.size() < 2)
-//     {
-//         client->reply(ERR_NEEDMOREPARAMS(client->get_nickname(), "OP"));
-//         return;
-//     }
-
-//     std::string channelName = args.at(0);
-//     std::string nickname = args.at(1);
-
-//     Channel *channel = get_channel(channelName);
-//     if (!channel)
-//     {
-//         client->reply(ERR_NOSUCHCHANNEL(client->get_nickname(), channelName));
-//         return;
-//     }
-
-//     // Check if the client is a channel operator
-//     if (!channel->is_operator(client))
-//     {
-//         client->reply(ERR_CHANOPRIVSNEEDED(client->get_nickname(), channelName));
-//         return;
-//     }
-
-//     // Set the client as an operator
-//     Client *target = get_client(nickname);
-//     if (!target)
-//     {
-//         client->reply(ERR_NOSUCHNICK(client->get_nickname(), nickname));
-//         return;
-//     }
-
-//     channel->add_operator(target);
-//     channel->broadcast(RPL_MODE(client->get_prefix(), channel->get_name(), "+o", target->get_nickname()));
-// }
 
 void topic(Client *client, std::vector<std::string> args)
 {
