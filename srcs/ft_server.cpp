@@ -69,7 +69,7 @@ int init_fd(fd_set *readfds, int serv_socket, std::map<int, Client *> &clients)
 Channel *get_channel(const std::string &name)
 {
     channel_iterator it_b = channels.begin();
-    channel_iterator it_e = channels.begin();
+    channel_iterator it_e = channels.end();
 
     while (it_b != it_e)
     {
@@ -116,6 +116,16 @@ Channel *create_channel(const std::string &name, const std::string &key, Client 
     if (!chan)
         return (NULL);
     channels.push_back(chan);
-
+    
     return (chan);
 }
+
+// void display_channel_list()
+// {
+//     std::cout << "List of channels:" << std::endl;
+
+//     for (channel_iterator it = channels.begin(); it != channels.end(); ++it)
+//     {
+//         std::cout << (*it)->get_name() << std::endl;
+//     }
+// }

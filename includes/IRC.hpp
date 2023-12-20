@@ -45,5 +45,7 @@ void mode(Client *client, std::vector<std::string> args);
 void privMsg(Client *client, std::vector<std::string> args);
 void topic(Client *client, std::vector<std::string> args);
 
+// void display_channel_list();
+
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: romain <romain@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 08:32:19 by romain            #+#    #+#             */
-/*   Updated: 2023/12/15 03:22:27 by romain           ###   ########.fr       */
+/*   Updated: 2023/12/20 05:02:48 by romain           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,7 +182,7 @@ std::string Channel::get_topic() const
     return _topic;
 }
 
-/*void Channel::remove_client(Client *client)
+void Channel::remove_client(Client *client)
 {
     client_iterator it_b = _clients.begin();
     client_iterator it_e = _clients.end();
@@ -194,23 +194,20 @@ std::string Channel::get_topic() const
 
         it_b++;
     }
- set_channel ne marche pas /!\
-    client->set_channel(NULL);
 
     if (client == _admin)
     {
         _admin = *(_clients.begin());
 
-        std::string message = client->get_nickname() + " is now the admin of the channel " + _name;
+        std::string message = _admin->get_nickname() + " is now the admin of the channel " + _name;
         log(message);
     }
-}*/
+}
 
 void Channel::kick(Client *client, Client *target, const std::string &reason)
 {
     this->broadcast(RPL_KICK(client->get_prefix(), _name, target->get_nickname(), reason));
-    // cf au dessus
-    //     this->remove_client(target);
+    this->remove_client(target);
 
     std::string message = client->get_nickname() + " kicked " + target->get_nickname() + " from channel " + _name;
     log(message);

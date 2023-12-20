@@ -6,7 +6,7 @@
 /*   By: romain <romain@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 16:37:34 by romain            #+#    #+#             */
-/*   Updated: 2023/12/20 01:52:48 by romain           ###   ########.fr       */
+/*   Updated: 2023/12/20 04:43:47 by romain           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,10 @@ void join(Client *client, std::vector<std::string> args)
 
     Channel *channel = get_channel(name);
     if (!channel)
+    {
         channel = create_channel(name, pass, client);
+        std::cout << "create channel" << std::endl;
+    }
 
     if (channel->get_limit() > 0 && channel->get_size() >= channel->get_limit())
     {
