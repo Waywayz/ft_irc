@@ -1,1 +1,9 @@
 est ce qu'un channel se supprime t il quand il se retrouve vide ?
+
+rejoindre le serveur nc localhost <port> <pass>
+
+PASS <pass>
+NICK <nickname>
+USER <username> <hostname> <servername> <realname>
+
+ensuite le client est enregistrer et peut taper les differentes commandes
