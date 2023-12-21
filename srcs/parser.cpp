@@ -45,6 +45,8 @@ void parse_n_exec(char *buffer, Client *client)
     commands.push_back(std::make_pair("PART", static_cast<cmds>(&part)));
     commands.push_back(std::make_pair("QUIT", static_cast<cmds>(&quit)));
     commands.push_back(std::make_pair("INVITE", static_cast<cmds>(&invite)));
+    commands.push_back(std::make_pair("PING", static_cast<cmds>(&ping)));
+    commands.push_back(std::make_pair("NOTICE", static_cast<cmds>(&notice)));
 
     std::istringstream bufferStream(buffer);
     std::string line;

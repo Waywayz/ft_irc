@@ -47,6 +47,8 @@ void topic(Client *client, std::vector<std::string> args);
 void part(Client *client, std::vector<std::string> args);
 void quit(Client *client, std::vector<std::string> args);
 void invite(Client *client, std::vector<std::string> args);
+void ping(Client *client, std::vector<std::string> args);
+void notice(Client *client, std::vector<std::string> args);
 
 // void display_channel_list();
 

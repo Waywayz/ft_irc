@@ -6,7 +6,7 @@
 /*   By: romain <romain@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 16:37:34 by romain            #+#    #+#             */
-/*   Updated: 2023/12/21 03:59:25 by romain           ###   ########.fr       */
+/*   Updated: 2023/12/21 15:42:55 by romain           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -462,4 +462,96 @@ void invite(Client *client, std::vector<std::string> args)
         client->reply(ERR_CHANOPRIVSNEEDED(client->get_nickname(), name));
         return;
     }
+}
+
+void ping(Client *client, std::vector<std::string> args)
+{
+    if (args.empty())
+    {
+        client->reply(ERR_NEEDMOREPARAMS(client->get_nickname(), "PING"));
+        return;
+    }
+
+    client->write(RPL_PING(client->get_prefix(), args.at(0)));
+}
+
+void pong(Client *client, std::vector<std::string> args)
+{
+    if (args.empty())
+    {
+        client->reply(ERR_NEEDMOREPARAMS(client->get_nickname(), "PONG"));
+        return;
+    }
+
+    client->write(RPL_PING(client->get_prefix(), args.at(0)));
+}
+
+void notice(Client *client, std::vector<std::string> args)
+{
+    if (args.size() < 2 || args[0].empty() || args[1].empty())
+    {
+        client->reply(ERR_NEEDMOREPARAMS(client->get_nickname(), "NOTICE"));
+        return;
+    }
+
+    // extract the target and the message
+
+    std::string target = args.at(0);
+    std::string message;
+
+    std::vector<std::string>::iterator it = args.begin() + 1;
+    std::vector<std::string>::iterator end = args.end();
+
+    while (it != end)
+    {
+        message.append(*it + " ");
+        it++;
+    }
+
+    if (message.at(0) == ':')
+        message = message.substr(1);
+
+    // if notice is for a channel
+
+    if (target.at(0) == '#')
+    {
+        Channel *channel = get_channel(target);
+
+        // channel not found
+        if (!channel)
+        {
+            client->reply(ERR_NOSUCHCHANNEL(client->get_nickname(), target));
+            return;
+        }
+
+        // channel is not for external messages
+        Channel *channel = get_channel(target);
+
+        // channel not found
+        if (!channel)
+        {
+            client->reply(ERR_NOSUCHCHANNEL(client->get_nickname(), target));
+            return;
+        }
+
+        if (!channel->has_member(client))
+        {
+            client->reply(ERR_CANNOTSENDTOCHAN(client->get_nickname(), target));
+            return;
+        }
+
+        channel->broadcast(RPL_NOTICE(client->get_prefix(), target, message), client);
+        return;
+    }
+
+    // else if notice is for a client
+
+    Client *dest = get_client(target);
+    if (!dest)
+    {
+        client->reply(ERR_NOSUCHNICK(client->get_nickname(), target));
+        return;
+    }
+
+    dest->write(RPL_NOTICE(client->get_prefix(), target, message));
 }

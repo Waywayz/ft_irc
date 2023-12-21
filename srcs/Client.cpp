@@ -6,7 +6,7 @@
 /*   By: romain <romain@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 10:25:40 by romain            #+#    #+#             */
-/*   Updated: 2023/12/21 04:07:27 by romain           ###   ########.fr       */
+/*   Updated: 2023/12/21 15:35:23 by romain           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,11 @@ void Client::join(Channel *channel)
     reply(RPL_NAMREPLY(_nickname, channel->get_name(), users));
     reply(RPL_ENDOFNAMES(_nickname, channel->get_name()));
     channel->broadcast(RPL_JOIN(get_prefix(), channel->get_name()));
+
+    if (channel->get_topic() != "")
+    {
+        log(channel->get_topic());
+    }
 
     std::string message = _nickname + " has joined to the channel " + channel->get_name();
     log(message);

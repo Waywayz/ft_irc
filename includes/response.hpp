@@ -6,7 +6,7 @@
 /*   By: romain <romain@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 13:59:22 by romain            #+#    #+#             */
-/*   Updated: 2023/12/21 03:28:56 by romain           ###   ########.fr       */
+/*   Updated: 2023/12/21 15:42:51 by romain           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,8 @@
 #define RPL_PRIVMSG(source, target, message) ":" + source + " PRIVMSG " + target + " :" + message
 #define RPL_TOPIC(source, channel, topic) ":" + source + " 332 " + client->get_nickname() + " " + channel + " :" + topic
 #define RPL_QUIT(source, message) ":" + source + " QUIT :Quit: " + message
+#define RPL_PING(source, token) ":" + source + " PONG :" + token
+#define RPL_NOTICE(source, target, message) ":" + source + " NOTICE " + target + " :" + message
 
 static inline void log(const std::string &message)
 {
