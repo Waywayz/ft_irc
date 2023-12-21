@@ -21,6 +21,7 @@ private:
     std::string _key;
     size_t _limit;
     bool _invit_only;
+    bool _op_topic;
 
     Channel();
     Channel(const Channel &src);
@@ -37,6 +38,7 @@ public:
     std::string get_key() const;
     size_t get_limit() const;
     bool invit_only() const;
+    bool op_topic() const;
 
     size_t get_size() const;
     std::vector<std::string> get_nicknames();
@@ -47,6 +49,7 @@ public:
     void set_invit_only(bool flag);
     void set_operator(bool active, Client *client);
     void set_topic(const std::string &topic, Client *client);
+    void set_topic_op(bool flag);
 
     void broadcast(const std::string &message);
     void broadcast(const std::string &message, Client *exclude);

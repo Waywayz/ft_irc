@@ -7,3 +7,5 @@ NICK <nickname>
 USER <username> <hostname> <servername> <realname>
 
 ensuite le client est enregistrer et peut taper les differentes commandes
+
+REGLER LE HOSTNAME DU CLIENT !!!!

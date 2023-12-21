@@ -17,6 +17,18 @@ bool auth_required(const std::string &command)
     return !(command == "USER" || command == "NICK" || command == "PASS" || command == "QUIT");
 }
 
+std::string deleteFlags(std::string str)
+{
+    std::string tmp;
+    for (size_t i = 0; i < str.size(); i++)
+    {
+        if (str[i] == '\r' || str[i] == '\n')
+            continue;
+        tmp += str[i];
+    }
+    return (tmp);
+}
+
 void parse_n_exec(char *buffer, Client *client)
 {
 
@@ -30,6 +42,8 @@ void parse_n_exec(char *buffer, Client *client)
     commands.push_back(std::make_pair("MODE", static_cast<cmds>(&mode)));
     commands.push_back(std::make_pair("PRIVMSG", static_cast<cmds>(&privMsg)));
     commands.push_back(std::make_pair("TOPIC", static_cast<cmds>(&topic)));
+    commands.push_back(std::make_pair("PART", static_cast<cmds>(&part)));
+    commands.push_back(std::make_pair("QUIT", static_cast<cmds>(&quit)));
 
     std::istringstream bufferStream(buffer);
     std::string line;
@@ -39,6 +53,7 @@ void parse_n_exec(char *buffer, Client *client)
         std::istringstream lineStream(line);
         std::string command;
         lineStream >> command;
+        command = deleteFlags(command);
         std::cout << command << std::endl;
         for (size_t i = 0; i < commands.size(); ++i)
         {
@@ -60,7 +75,7 @@ void parse_n_exec(char *buffer, Client *client)
                 return;
             }
         }
-        client->reply(ERR_UNKNOWNCOMMAND(client->get_nickname(), command));
+        // client->reply(ERR_UNKNOWNCOMMAND(client->get_nickname(), command));
     }
 }
 

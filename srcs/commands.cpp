@@ -6,7 +6,7 @@
 /*   By: romain <romain@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 16:37:34 by romain            #+#    #+#             */
-/*   Updated: 2023/12/20 17:24:38 by romain           ###   ########.fr       */
+/*   Updated: 2023/12/21 02:39:54 by romain           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,10 @@ void kick(Client *client, std::vector<std::string> args)
         client->reply(ERR_USERNOTINCHANNEL(client->get_nickname(), dest->get_nickname(), name));
         return;
     }
+
+    // pas de msg RPL specifique si l'utilisateur veut se kick lui mm mais impossible de le faire
+    if (client == dest)
+        return;
 
     // if everything is fine
     channel->kick(client, dest, reason);
@@ -214,7 +218,6 @@ void mode(Client *client, std::vector<std::string> args)
         char prev_c = i > 0 ? args[1][i - 1] : '\0';
         bool active = prev_c == '+';
 
-        // add t
         switch (c)
         {
         case 'i':
@@ -235,6 +238,12 @@ void mode(Client *client, std::vector<std::string> args)
             channel->set_key(active ? args[p] : "");
             channel->broadcast(RPL_MODE(client->get_prefix(), channel->get_name(), (active ? "+k" : "-k"), (active ? args[p] : "")));
             p += active ? 1 : 0;
+            break;
+        }
+        case 't':
+        {
+            channel->set_topic_op(active);
+            channel->broadcast(RPL_MODE(client->get_prefix(), channel->get_name(), (active ? "+t" : "-t"), ""));
             break;
         }
         case 'o':
@@ -351,24 +360,63 @@ void topic(Client *client, std::vector<std::string> args)
         return;
     }
 
-    // Get the topic
-    std::string topic;
-    if (args.size() > 1)
+    if (client == channel->get_admin() || (channel->op_topic() && channel->is_operator(client)))
     {
-        std::vector<std::string>::iterator it = args.begin() + 1;
-        std::vector<std::string>::iterator end = args.end();
-
-        while (it != end)
+        // Get the topic
+        std::string topic;
+        if (args.size() > 1)
         {
-            topic.append(*it + " ");
-            it++;
+            std::vector<std::string>::iterator it = args.begin() + 1;
+            std::vector<std::string>::iterator end = args.end();
+
+            while (it != end)
+            {
+                topic.append(*it + " ");
+                it++;
+            }
+
+            if (topic.at(0) == ':')
+                topic = topic.substr(1);
         }
 
-        if (topic.at(0) == ':')
-            topic = topic.substr(1);
+        // Set the topic
+        channel->set_topic(topic, client);
+        channel->broadcast(RPL_TOPIC(client->get_prefix(), channel->get_name(), topic));
+    }
+    else
+    {
+        client->reply(ERR_CHANOPRIVSNEEDED(client->get_nickname(), channelName));
+        return;
+    }
+}
+
+void part(Client *client, std::vector<std::string> args)
+{
+    if (args.empty())
+    {
+        client->reply(ERR_NEEDMOREPARAMS(client->get_nickname(), "PART"));
+        return;
     }
 
-    // Set the topic
-    channel->set_topic(topic, client);
-    channel->broadcast(RPL_TOPIC(client->get_prefix(), channel->get_name(), topic));
+    std::string name = args[0];
+    Channel *channel = get_channel(name);
+
+    if (!channel || !channel->has_member(client))
+    {
+        client->reply(ERR_NOSUCHCHANNEL(client->get_nickname(), name));
+        return;
+    }
+
+    client->leave(channel);
+}
+
+void quit(Client *client, std::vector<std::string> args)
+{
+    std::string reason = args.empty() ? "Leaving..." : args.at(0);
+
+    if (reason.at(0) == ':')
+        reason = reason.substr(1);
+
+    client->write(RPL_QUIT(client->get_prefix(), reason));
+    on_client_disconnect(client->get_fd());
 }

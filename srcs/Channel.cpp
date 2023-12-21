@@ -6,14 +6,14 @@
 /*   By: romain <romain@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 08:32:19 by romain            #+#    #+#             */
-/*   Updated: 2023/12/20 05:02:48 by romain           ###   ########.fr       */
+/*   Updated: 2023/12/21 02:31:28 by romain           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Channel.hpp"
 
 Channel::Channel(const std::string &name, const std::string &key, Client *admin)
-    : _name(name), _topic(""), _admin(admin), _key(key), _limit(0), _invit_only(false) {}
+    : _name(name), _topic(""), _admin(admin), _key(key), _limit(0), _invit_only(false), _op_topic(true) {}
 
 Channel::~Channel() {}
 
@@ -23,12 +23,14 @@ Client *Channel::get_admin() const { return _admin; }
 std::string Channel::get_key() const { return _key; }
 size_t Channel::get_limit() const { return _limit; }
 bool Channel::invit_only() const { return _invit_only; }
+bool Channel::op_topic() const { return _op_topic; }
 
 size_t Channel::get_size() const { return _clients.size(); }
 
 void Channel::set_key(std::string key) { _key = key; }
 void Channel::set_limit(size_t limit) { _limit = limit; }
 void Channel::set_invit_only(bool flag) { _invit_only = flag; }
+void Channel::set_topic_op(bool flag) { _op_topic = flag; }
 
 std::vector<std::string> Channel::get_nicknames()
 {
@@ -208,6 +210,7 @@ void Channel::kick(Client *client, Client *target, const std::string &reason)
 {
     this->broadcast(RPL_KICK(client->get_prefix(), _name, target->get_nickname(), reason));
     this->remove_client(target);
+    client->remove_channel(this);
 
     std::string message = client->get_nickname() + " kicked " + target->get_nickname() + " from channel " + _name;
     log(message);

@@ -12,7 +12,6 @@
 #include <map>
 #include <sstream>
 
-
 #include "Channel.hpp"
 #include "Client.hpp"
 // #define nullptr 0
@@ -32,9 +31,10 @@ int init_fd(fd_set *readfds, int serv_socket, std::map<int, Client *> &clients);
 Channel *get_channel(const std::string &name);
 Client *get_client(const std::string &nickname);
 Channel *create_channel(const std::string &name, const std::string &key, Client *client);
-void    set_password(std::string pass);
+void set_password(std::string pass);
 std::string get_password();
-void    parse_n_exec(char *buffer, Client *client);
+void parse_n_exec(char *buffer, Client *client);
+void on_client_disconnect(int fd);
 
 void join(Client *client, std::vector<std::string> args);
 void kick(Client *client, std::vector<std::string> args);
@@ -44,8 +44,9 @@ void user(Client *client, std::vector<std::string> args);
 void mode(Client *client, std::vector<std::string> args);
 void privMsg(Client *client, std::vector<std::string> args);
 void topic(Client *client, std::vector<std::string> args);
+void part(Client *client, std::vector<std::string> args);
+void quit(Client *client, std::vector<std::string> args);
 
 // void display_channel_list();
-
 
 #endif

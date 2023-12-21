@@ -55,9 +55,9 @@ void receive_datas(fd_set *readfds, std::map<int, Client *> &clients)
     }
 }
 
-std::vector<Channel *> channels;
-std::map<int, Client *> clients;
-std::string password;
+// std::vector<Channel *> channels;
+// std::map<int, Client *> clients;
+// std::string password;
 
 int main(int ac, char **av)
 {

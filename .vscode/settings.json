@@ -1,5 +1,11 @@
 {
-    "files.associations": {
-        "typeinfo": "cpp"
-    }
+  "files.associations": {
+    "typeinfo": "cpp",
+    "__hash_table": "cpp",
+    "__tree": "cpp",
+    "map": "cpp",
+    "string": "cpp",
+    "unordered_map": "cpp",
+    "vector": "cpp"
+  }
 }

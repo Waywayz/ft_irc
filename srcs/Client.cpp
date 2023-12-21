@@ -6,7 +6,7 @@
 /*   By: romain <romain@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 10:25:40 by romain            #+#    #+#             */
-/*   Updated: 2023/12/15 04:19:57 by romain           ###   ########.fr       */
+/*   Updated: 2023/12/21 02:48:47 by romain           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,25 +91,40 @@ void Client::join(Channel *channel)
     log(message);
 }
 
-/*
-    Cette fonction n'est pas a faire je crois,
-    et si jamais on doit la retouchee ca sera en iterant
-    sur toute le vector _channel
+void Client::leave(Channel *channel)
+{
+    const std::string name = channel->get_name();
 
-void Client::leave() {
-
-    if (!_channel)
-        return;
-
-    channel_iterator    it_b = _channel->begin();
-    channel_iterator    it_e = _channel->end();
-
-    while ()
-    const std::string name = _channel->get_name();
-
-    _channel->broadcast(RPL_PART(get_prefix(), _channel->get_name()));
-    _channel->remove_client(this);
+    channel->broadcast(RPL_PART(get_prefix(), channel->get_name()));
+    channel->remove_client(this);
+    this->remove_channel(channel);
 
     std::string message = _nickname + " has left the channel " + name;
     log(message);
-}*/
+}
+
+void Client::leave_all_channels()
+{
+    channel_iterator it_b = _channel.begin();
+    channel_iterator it_e = _channel.end();
+
+    while (it_b != it_e)
+    {
+        this->leave(*it_b);
+        it_b++;
+    }
+}
+
+void Client::remove_channel(Channel *channel)
+{
+    channel_iterator it_b = _channel.begin();
+    channel_iterator it_e = _channel.end();
+
+    while (it_b != it_e)
+    {
+        if (*it_b == channel)
+            _channel.erase(it_b);
+
+        it_b++;
+    }
+}

@@ -1,5 +1,9 @@
 #include "IRC.hpp"
 
+std::vector<Channel *> channels;
+std::map<int, Client *> clients;
+std::string password;
+
 int setup_server(sockaddr_in *serv_addr, char *port)
 {
 
@@ -116,16 +120,36 @@ Channel *create_channel(const std::string &name, const std::string &key, Client 
     if (!chan)
         return (NULL);
     channels.push_back(chan);
-    
+
     return (chan);
 }
 
-// void display_channel_list()
-// {
-//     std::cout << "List of channels:" << std::endl;
+void on_client_disconnect(int fd)
+{
+    try
+    {
+        // finding the client and removing
 
-//     for (channel_iterator it = channels.begin(); it != channels.end(); ++it)
-//     {
-//         std::cout << (*it)->get_name() << std::endl;
-//     }
-// }
+        Client *client = clients.at(fd);
+
+        client->leave_all_channels();
+
+        // log about disconnecting
+
+        char message[1000];
+        snprintf(message, sizeof(message), "%s:%d has disconnected!", client->get_hostname().c_str(), client->get_port());
+        log(message);
+
+        clients.erase(fd);
+
+        // Ici il faut close le fd correspondant !!!!
+
+        // release memory
+
+        delete client;
+    }
+    catch (const std::exception &e)
+    {
+        std::cout << "Error while disconnecting! " << e.what() << std::endl;
+    }
+}
