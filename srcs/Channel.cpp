@@ -6,7 +6,7 @@
 /*   By: romain <romain@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 08:32:19 by romain            #+#    #+#             */
-/*   Updated: 2023/12/21 02:31:28 by romain           ###   ########.fr       */
+/*   Updated: 2023/12/21 03:07:50 by romain           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,7 +197,7 @@ void Channel::remove_client(Client *client)
         it_b++;
     }
 
-    if (client == _admin)
+    if (client == _admin && this->get_size() > 0)
     {
         _admin = *(_clients.begin());
 

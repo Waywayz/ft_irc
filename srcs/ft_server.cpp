@@ -112,7 +112,6 @@ std::string get_password()
     return password;
 }
 
-// need to add fonction pour delete un channel
 
 Channel *create_channel(const std::string &name, const std::string &key, Client *client)
 {
