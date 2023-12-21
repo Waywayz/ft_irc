@@ -143,6 +143,8 @@ void on_client_disconnect(int fd)
 
         // Ici il faut close le fd correspondant !!!!
 
+        close(fd);
+
         // release memory
 
         delete client;

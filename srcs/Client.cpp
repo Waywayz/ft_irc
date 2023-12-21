@@ -6,7 +6,7 @@
 /*   By: romain <romain@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 10:25:40 by romain            #+#    #+#             */
-/*   Updated: 2023/12/21 02:48:47 by romain           ###   ########.fr       */
+/*   Updated: 2023/12/21 04:07:27 by romain           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,28 @@ void Client::write(const std::string &message) const
 void Client::reply(const std::string &reply)
 {
     this->write(":" + get_prefix() + " " + reply);
+}
+
+bool Client::has_invit(Channel *channel)
+{
+    channel_iterator it_b = _channel_invit.begin();
+    channel_iterator it_e = _channel_invit.end();
+
+    while (it_b != it_e)
+    {
+        if (*it_b == channel)
+            return true;
+
+        it_b++;
+    }
+
+    return false;
+}
+
+void Client::set_invit_channel(Channel *channel)
+{
+    _channel_invit.push_back(channel);
+    this->write(":" + _nickname + " " + channel->get_name() + " :You have been invited to join " + channel->get_name());
 }
 
 void Client::welcome()

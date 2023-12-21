@@ -6,7 +6,7 @@
 /*   By: romain <romain@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 10:20:54 by romain            #+#    #+#             */
-/*   Updated: 2023/12/21 02:48:24 by romain           ###   ########.fr       */
+/*   Updated: 2023/12/21 03:42:25 by romain           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ private:
 
     ClientState _state;
     std::vector<Channel *> _channel;
+    std::vector<Channel *> _channel_invit;
 
 public:
     Client(int fd, int port, const std::string &hostname);
@@ -69,9 +70,10 @@ public:
     void set_username(const std::string &username);
     void set_realname(const std::string &realname);
     void set_state(ClientState state);
-    // void set_channel(Channel *channel);
+    void set_invit_channel(Channel *channel);
 
     bool is_registered() const;
+    bool has_invit(Channel *channel);
 
     void write(const std::string &message) const;
     void reply(const std::string &reply);

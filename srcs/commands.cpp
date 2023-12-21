@@ -6,7 +6,7 @@
 /*   By: romain <romain@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 16:37:34 by romain            #+#    #+#             */
-/*   Updated: 2023/12/21 02:39:54 by romain           ###   ########.fr       */
+/*   Updated: 2023/12/21 03:59:25 by romain           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,12 @@ void join(Client *client, std::vector<std::string> args)
     Channel *channel = get_channel(name);
     if (!channel)
         channel = create_channel(name, pass, client);
+
+    if (channel->invit_only() && !client->has_invit(channel))
+    {
+        client->reply(ERR_INVITEONLYCHAN(client->get_nickname(), channel->get_name()));
+        return;
+    }
 
     if (channel->get_limit() > 0 && channel->get_size() >= channel->get_limit())
     {
@@ -381,7 +387,6 @@ void topic(Client *client, std::vector<std::string> args)
 
         // Set the topic
         channel->set_topic(topic, client);
-        channel->broadcast(RPL_TOPIC(client->get_prefix(), channel->get_name(), topic));
     }
     else
     {
@@ -419,4 +424,42 @@ void quit(Client *client, std::vector<std::string> args)
 
     client->write(RPL_QUIT(client->get_prefix(), reason));
     on_client_disconnect(client->get_fd());
+}
+
+void invite(Client *client, std::vector<std::string> args)
+{
+    if (args.size() < 1)
+    {
+        client->reply(ERR_NEEDMOREPARAMS(client->get_nickname(), "INVITE"));
+        return;
+    }
+
+    std::string target = args.at(0);
+    std::string name = args.at(1);
+
+    Client *dest = get_client(target);
+    Channel *channel = get_channel(name);
+
+    if (!dest)
+    {
+        client->reply(ERR_NOSUCHCHANNEL(client->get_nickname(), target));
+        return;
+    }
+
+    if (!channel)
+    {
+        client->reply(ERR_NOSUCHCHANNEL(client->get_nickname(), name));
+        return;
+    }
+
+    if (channel->is_operator(client) || client == channel->get_admin())
+    {
+        dest->set_invit_channel(channel);
+    }
+
+    else
+    {
+        client->reply(ERR_CHANOPRIVSNEEDED(client->get_nickname(), name));
+        return;
+    }
 }
