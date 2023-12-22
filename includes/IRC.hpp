@@ -14,7 +14,7 @@
 
 #include "Channel.hpp"
 #include "Client.hpp"
-// #define nullptr 0
+#define nullptr 0
 
 typedef std::vector<Channel *>::iterator channel_iterator;
 typedef std::map<int, Client *>::iterator client_iterator;
@@ -36,6 +36,7 @@ std::string get_password();
 void parse_n_exec(char *buffer, Client *client);
 void on_client_disconnect(int fd);
 
+void cap(Client *client, std::vector<std::string> args);
 void join(Client *client, std::vector<std::string> args);
 void kick(Client *client, std::vector<std::string> args);
 void nick(Client *client, std::vector<std::string> args);

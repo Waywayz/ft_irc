@@ -130,7 +130,6 @@ void on_client_disconnect(int fd)
         // finding the client and removing
 
         Client *client = clients.at(fd);
-
         client->leave_all_channels();
 
         // log about disconnecting
@@ -138,7 +137,7 @@ void on_client_disconnect(int fd)
         char message[1000];
         snprintf(message, sizeof(message), "%s:%d has disconnected!", client->get_hostname().c_str(), client->get_port());
         log(message);
-
+        delete client;
         clients.erase(fd);
 
         // Ici il faut close le fd correspondant !!!!
@@ -147,7 +146,6 @@ void on_client_disconnect(int fd)
 
         // release memory
 
-        delete client;
     }
     catch (const std::exception &e)
     {

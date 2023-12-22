@@ -46,7 +46,7 @@ bool Client::is_registered() const { return _state == REGISTERED; }
 void Client::write(const std::string &message) const
 {
     std::string buffer = message + "\r\n";
-    if (send(_fd, buffer.c_str(), buffer.length(), 0) < 0)
+    if (send(_fd, buffer.c_str(), buffer.length(), MSG_NOSIGNAL) < 0)
         throw std::runtime_error("Error while sending a message to a client!");
 }
 

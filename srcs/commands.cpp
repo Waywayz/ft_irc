@@ -12,6 +12,12 @@
 
 #include "IRC.hpp"
 
+void    cap(Client *client, std::vector<std::string> args) 
+{
+    (void)args;
+    client->reply("CAP LS :");
+}
+
 void join(Client *client, std::vector<std::string> args)
 {
     // syntax: JOIN <channels> [<keys>]
@@ -148,7 +154,6 @@ void user(Client *client, std::vector<std::string> args)
 {
     // stntax: USER <username> <hostname> <servername> <realname>
 
-    std::cout << "dedans" << std::endl;
     if (client->is_registered())
     {
         std::cout << "registered" << std::endl;
@@ -515,16 +520,6 @@ void notice(Client *client, std::vector<std::string> args)
 
     if (target.at(0) == '#')
     {
-        Channel *channel = get_channel(target);
-
-        // channel not found
-        if (!channel)
-        {
-            client->reply(ERR_NOSUCHCHANNEL(client->get_nickname(), target));
-            return;
-        }
-
-        // channel is not for external messages
         Channel *channel = get_channel(target);
 
         // channel not found

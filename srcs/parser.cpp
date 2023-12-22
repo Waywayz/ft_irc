@@ -34,6 +34,7 @@ void parse_n_exec(char *buffer, Client *client)
 
     typedef void (*cmds)(Client *, std::vector<std::string>);
     std::vector<std::pair<std::string, cmds> > commands;
+    commands.push_back(std::make_pair("CAP", static_cast<cmds>(&cap)));
     commands.push_back(std::make_pair("JOIN", static_cast<cmds>(&join)));
     commands.push_back(std::make_pair("KICK", static_cast<cmds>(&kick)));
     commands.push_back(std::make_pair("NICK", static_cast<cmds>(&nick)));
@@ -48,37 +49,32 @@ void parse_n_exec(char *buffer, Client *client)
     commands.push_back(std::make_pair("PING", static_cast<cmds>(&ping)));
     commands.push_back(std::make_pair("NOTICE", static_cast<cmds>(&notice)));
 
+
     std::istringstream bufferStream(buffer);
     std::string line;
 
-    while (std::getline(bufferStream, line))
+    while (std::getline(bufferStream, line, '\n'))
     {
+        line = deleteFlags(line);
         std::istringstream lineStream(line);
         std::string command;
         lineStream >> command;
-        command = deleteFlags(command);
-        std::cout << command << std::endl;
         for (size_t i = 0; i < commands.size(); ++i)
         {
             if (commands[i].first == command)
             {
-
                 std::vector<std::string> args;
                 std::string arg;
-                while (lineStream >> arg)
-                {
+                while (lineStream >> arg) {
                     args.push_back(arg);
                 }
-                if (!client->is_registered() && auth_required(command))
-                {
+                if (!client->is_registered() && auth_required(command)) {
                     client->reply(ERR_NOTREGISTERED(client->get_nickname()));
-                    return;
                 }
                 commands[i].second(client, args);
-                return;
             }
         }
-        // client->reply(ERR_UNKNOWNCOMMAND(client->get_nickname(), command));
+        client->reply(ERR_UNKNOWNCOMMAND(client->get_nickname(), command));
     }
 }
 

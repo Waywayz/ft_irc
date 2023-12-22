@@ -1,25 +1,11 @@
 
 #include "IRC.hpp"
 
-/*
-        nc localhost <port>
-        irssi -c localhost -p <port>
-
-A faire:
-    INVITE
-    PRIVMSG
-    MODE
-    TOPIC
-*/
-
-// version with map
-//std::map<int, Client *> clients;
-
 void receive_datas(fd_set *readfds, std::map<int, Client *> &clients)
 {
     for (std::map<int, Client *>::iterator it = clients.begin(); it != clients.end();)
     {
-        int client_fd = it->first; // obtenir la clé (client_fd) à partir de la map
+        int client_fd = it->first;// obtenir la clé (client_fd) à partir de la map
         if (FD_ISSET(client_fd, readfds))
         {
             char buffer[1024];
@@ -29,8 +15,8 @@ void receive_datas(fd_set *readfds, std::map<int, Client *> &clients)
             {
                 // Deconnexion du client
                 close(client_fd);
-                //it = 
                 clients.erase(it);
+                it = clients.begin();
                 std::cout << "Client has disconnected." << std::endl;
                 continue;
             }
@@ -40,15 +26,6 @@ void receive_datas(fd_set *readfds, std::map<int, Client *> &clients)
                 buffer[bytesRead] = '\0';
                 std::cout << "Donnees : <" << buffer << ">" << std::endl;
                 parse_n_exec(buffer, it->second);
-
-                // On gere les cmds dans cet ordre :
-                // Client a ses infos full (PASS / NAME / NICK)
-                // => on exe commande
-                // sinon
-                // => exec que PASS NAME NICK
-                // fonctions utiles :
-                // sendRPL (send(client_fd, str, strlen))
-                // registerClient si infos completes qui envoie tous les RPL
             }
         }
         ++it;
@@ -78,7 +55,6 @@ int main(int ac, char **av)
 
     while (true)
     {
-
         int max_fd = init_fd(&readfds, serv_socket, clients);
         if (select(max_fd + 1, &readfds, nullptr, nullptr, nullptr) == -1)
         {
