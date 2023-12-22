@@ -28,9 +28,9 @@ std::string Client::get_hostname() const { return _hostname; }
 std::string Client::get_prefix() const
 {
     std::string username = _username.empty() ? "" : "!" + _username;
-    std::string hostname = _hostname.empty() ? "" : "@" + _hostname;
+    std::string servername = "@ft_irc";
 
-    return _nickname + username + hostname;
+    return _nickname + username + servername;
 }
 
 std::vector<Channel *> Client::get_channel() const { return _channel; }
@@ -79,9 +79,8 @@ void Client::set_invit_channel(Channel *channel)
 
 void Client::welcome()
 {
-    if (_state != LOGIN || _username.empty() || _realname.empty() || _nickname.empty())
+    if (_state != LOGIN || _state == REGISTERED || _username.empty() || _realname.empty() || _nickname.empty())
         return;
-
     _state = REGISTERED;
     this->reply(RPL_WELCOME(_nickname));
 

@@ -12,13 +12,12 @@
 
 #include "Channel.hpp"
 
-Channel::Channel(const std::string &name, const std::string &key, Client *admin)
-    : _name(name), _topic(""), _admin(admin), _key(key), _limit(0), _invit_only(false), _op_topic(true) {}
+Channel::Channel(const std::string &name, const std::string &key)
+    : _name(name), _topic(""), _key(key), _limit(0), _invit_only(false), _op_topic(true) {}
 
 Channel::~Channel() {}
 
 std::string Channel::get_name() const { return _name; }
-Client *Channel::get_admin() const { return _admin; }
 
 std::string Channel::get_key() const { return _key; }
 size_t Channel::get_limit() const { return _limit; }
@@ -43,7 +42,7 @@ std::vector<std::string> Channel::get_nicknames()
     {
         Client *client = *it_b;
 
-        std::string nick = (client == _admin ? "@" : "") + client->get_nickname();
+        std::string nick = (this->is_operator(client) ? "@" : "") + client->get_nickname();
         nicknames.push_back(nick);
 
         it_b++;
@@ -87,27 +86,6 @@ void Channel::add_client(Client *client)
     _clients.push_back(client);
 }
 
-// void Channel::add_operator(Client *client)
-// {
-//     _operators.push_back(client);
-// }
-
-// void Channel::remove_operator(Client *client)
-// {
-//     client_iterator it_b = _operators.begin();
-//     client_iterator it_e = _operators.end();
-
-//     while (it_b != it_e)
-//     {
-//         if (*it_b == client)
-//         {
-//             _operators.erase(it_b);
-//             break;
-//         }
-
-//         it_b++;
-//     }
-// }
 
 void Channel::set_operator(bool active, Client *client)
 {
@@ -195,14 +173,6 @@ void Channel::remove_client(Client *client)
             _clients.erase(it_b);
 
         it_b++;
-    }
-
-    if (client == _admin && this->get_size() > 0)
-    {
-        _admin = *(_clients.begin());
-
-        std::string message = _admin->get_nickname() + " is now the admin of the channel " + _name;
-        log(message);
     }
 }
 

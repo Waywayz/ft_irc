@@ -86,6 +86,26 @@ Channel *get_channel(const std::string &name)
     return NULL;
 }
 
+void remove_channel_from_serv(Channel *channel)
+{
+    channel_iterator it_b = channels.begin();
+    channel_iterator it_e = channels.end();
+
+    while (it_b != it_e)
+    {
+        if (*it_b == channel)
+        {
+            channels.erase(it_b);
+            delete channel;
+            return;
+        }
+
+        it_b++;
+    }
+
+    return;
+}
+
 Client *get_client(const std::string &nickname)
 {
     client_iterator it_b = clients.begin();
@@ -113,9 +133,9 @@ std::string get_password()
 }
 
 
-Channel *create_channel(const std::string &name, const std::string &key, Client *client)
+Channel *create_channel(const std::string &name, const std::string &key)
 {
-    Channel *chan = new Channel(name, key, client);
+    Channel *chan = new Channel(name, key);
     if (!chan)
         return (NULL);
     channels.push_back(chan);
@@ -137,7 +157,7 @@ void on_client_disconnect(int fd)
         char message[1000];
         snprintf(message, sizeof(message), "%s:%d has disconnected!", client->get_hostname().c_str(), client->get_port());
         log(message);
-        delete client;
+
         clients.erase(fd);
 
         // Ici il faut close le fd correspondant !!!!
@@ -146,9 +166,41 @@ void on_client_disconnect(int fd)
 
         // release memory
 
+        delete client;
+
     }
     catch (const std::exception &e)
     {
         std::cout << "Error while disconnecting! " << e.what() << std::endl;
     }
+}
+
+void free_all()
+{
+    client_iterator it_b = clients.begin();
+    client_iterator it_e = clients.end();
+
+    while (it_b != it_e)
+    {
+        client_iterator it_c = it_b;
+        it_b++;
+
+        clients.erase(it_c->second->get_fd());
+        close(it_c->second->get_fd());
+        delete it_c->second;
+    }
+
+    channel_iterator it_bb = channels.begin();
+    channel_iterator it_ee = channels.end();
+
+    while (it_bb != it_ee)
+    {
+        channel_iterator it_cc = it_bb;
+        it_bb++;
+
+        channels.erase(it_cc);
+        delete &it_cc;
+    }
+
+    return;
 }

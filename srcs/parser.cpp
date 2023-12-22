@@ -14,7 +14,7 @@
 
 bool auth_required(const std::string &command)
 {
-    return !(command == "USER" || command == "NICK" || command == "PASS" || command == "QUIT");
+    return !(command == "USER" || command == "NICK" || command == "PASS" || command == "QUIT" || command == "CAP");
 }
 
 std::string deleteFlags(std::string str)
@@ -70,11 +70,12 @@ void parse_n_exec(char *buffer, Client *client)
                 }
                 if (!client->is_registered() && auth_required(command)) {
                     client->reply(ERR_NOTREGISTERED(client->get_nickname()));
+                    break ;
                 }
                 commands[i].second(client, args);
             }
         }
-        client->reply(ERR_UNKNOWNCOMMAND(client->get_nickname(), command));
+        //client->reply(ERR_UNKNOWNCOMMAND(client->get_nickname(), command));
     }
 }
 

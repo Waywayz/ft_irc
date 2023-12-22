@@ -11,6 +11,7 @@
 #include <cstring>
 #include <map>
 #include <sstream>
+#include <signal.h>
 
 #include "Channel.hpp"
 #include "Client.hpp"
@@ -30,11 +31,13 @@ int init_fd(fd_set *readfds, int serv_socket, std::map<int, Client *> &clients);
 
 Channel *get_channel(const std::string &name);
 Client *get_client(const std::string &nickname);
-Channel *create_channel(const std::string &name, const std::string &key, Client *client);
+Channel *create_channel(const std::string &name, const std::string &key);
 void set_password(std::string pass);
 std::string get_password();
 void parse_n_exec(char *buffer, Client *client);
 void on_client_disconnect(int fd);
+void remove_channel_from_serv(Channel *channel);
+void free_all();
 
 void cap(Client *client, std::vector<std::string> args);
 void join(Client *client, std::vector<std::string> args);

@@ -14,7 +14,6 @@ class Channel
 private:
     std::string _name;
     std::string _topic;
-    Client *_admin;
     std::vector<Client *> _clients;
     std::vector<Client *> _operators;
 
@@ -27,11 +26,10 @@ private:
     Channel(const Channel &src);
 
 public:
-    Channel(const std::string &name, const std::string &key, Client *admin);
+    Channel(const std::string &name, const std::string &key);
     ~Channel();
 
     std::string get_name() const;
-    Client *get_admin() const;
     bool is_operator(Client *client);
     bool has_member(Client *client);
 

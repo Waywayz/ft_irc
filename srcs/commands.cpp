@@ -14,8 +14,10 @@
 
 void    cap(Client *client, std::vector<std::string> args) 
 {
-    (void)args;
-    client->reply("CAP LS :");
+    if (args[0] == "LS")
+        client->reply("CAP * LS :");
+    else if (args[0] == "END")
+        return ;
 }
 
 void join(Client *client, std::vector<std::string> args)
@@ -38,7 +40,10 @@ void join(Client *client, std::vector<std::string> args)
 
     Channel *channel = get_channel(name);
     if (!channel)
-        channel = create_channel(name, pass, client);
+    {
+        channel = create_channel(name, pass);
+        channel->set_operator(true, client);
+    }
 
     if (channel->invit_only() && !client->has_invit(channel))
     {
@@ -98,9 +103,10 @@ void kick(Client *client, std::vector<std::string> args)
         return;
     }
 
-    if (channel->get_admin() != client)
+    if (!channel->is_operator(client))
     {
         client->reply(ERR_CHANOPRIVSNEEDED(client->get_nickname(), name));
+        // std::cout << "" << std::endl;
         return;
     }
 
@@ -156,14 +162,12 @@ void user(Client *client, std::vector<std::string> args)
 
     if (client->is_registered())
     {
-        std::cout << "registered" << std::endl;
         client->reply(ERR_ALREADYREGISTERED(client->get_nickname()));
         return;
     }
 
     if (args.size() < 4)
     {
-        std::cout << "needparams" << std::endl;
         client->reply(ERR_NEEDMOREPARAMS(client->get_nickname(), "USER"));
         return;
     }
@@ -185,8 +189,9 @@ void nick(Client *client, std::vector<std::string> args)
 
     if (get_client(nickname))
     {
+        nickname += '_';
+        client->set_nickname(nickname);
         client->reply(ERR_NICKNAMEINUSE(client->get_nickname()));
-        return;
     }
 
     client->set_nickname(nickname);
@@ -202,7 +207,12 @@ void mode(Client *client, std::vector<std::string> args)
 
     if (args.size() < 2)
     {
-        client->reply(ERR_NEEDMOREPARAMS(client->get_nickname(), "MODE"));
+        // client->reply(ERR_NEEDMOREPARAMS(client->get_nickname(), "MODE"));
+        return;
+    }
+
+    if (args.size() == 2 && (args[1][1] == 'i'))
+    {
         return;
     }
 
@@ -215,7 +225,7 @@ void mode(Client *client, std::vector<std::string> args)
         return;
     }
 
-    if (channel->get_admin() != client)
+    if (!channel->is_operator(client))
     {
         client->reply(ERR_CHANOPRIVSNEEDED(client->get_nickname(), target));
         return;
@@ -259,7 +269,7 @@ void mode(Client *client, std::vector<std::string> args)
         }
         case 'o':
         {
-            Client *dest = get_client(args[p]);
+            Client *dest = get_client(args[1]);
             if (!dest)
             {
                 client->reply(ERR_NOSUCHNICK(client->get_nickname(), args[p]));
@@ -274,7 +284,6 @@ void mode(Client *client, std::vector<std::string> args)
 
             channel->set_operator(active, dest);
             channel->broadcast(RPL_MODE(client->get_prefix(), channel->get_name(), (active ? "+o" : "-o"), (active ? args[p] : "")));
-            // p += active ? 1 : 0;
             break;
         }
         default:
@@ -334,8 +343,6 @@ void privMsg(Client *client, std::vector<std::string> args)
         return;
     }
 
-    // else if notice is for a client
-
     Client *dest = get_client(target);
     if (!dest)
     {
@@ -348,7 +355,6 @@ void privMsg(Client *client, std::vector<std::string> args)
 
 void topic(Client *client, std::vector<std::string> args)
 {
-    // Handling errors
     if (args.size() < 1)
     {
         client->reply(ERR_NEEDMOREPARAMS(client->get_nickname(), "TOPIC"));
@@ -364,16 +370,14 @@ void topic(Client *client, std::vector<std::string> args)
         return;
     }
 
-    // Check if the client is in the channel
     if (!channel->has_member(client))
     {
         client->reply(ERR_NOTONCHANNEL(client->get_nickname(), channelName));
         return;
     }
 
-    if (client == channel->get_admin() || (channel->op_topic() && channel->is_operator(client)))
+    if (!channel->op_topic())
     {
-        // Get the topic
         std::string topic;
         if (args.size() > 1)
         {
@@ -390,7 +394,26 @@ void topic(Client *client, std::vector<std::string> args)
                 topic = topic.substr(1);
         }
 
-        // Set the topic
+        channel->set_topic(topic, client);
+    }
+    else if (channel->op_topic() && channel->is_operator(client))
+    {
+        std::string topic;
+        if (args.size() > 1)
+        {
+            std::vector<std::string>::iterator it = args.begin() + 1;
+            std::vector<std::string>::iterator end = args.end();
+
+            while (it != end)
+            {
+                topic.append(*it + " ");
+                it++;
+            }
+
+            if (topic.at(0) == ':')
+                topic = topic.substr(1);
+        }
+
         channel->set_topic(topic, client);
     }
     else
@@ -416,6 +439,9 @@ void part(Client *client, std::vector<std::string> args)
         client->reply(ERR_NOSUCHCHANNEL(client->get_nickname(), name));
         return;
     }
+
+    if (channel->is_operator(client))
+        channel->set_operator(false, client);
 
     client->leave(channel);
 }
@@ -457,7 +483,7 @@ void invite(Client *client, std::vector<std::string> args)
         return;
     }
 
-    if (channel->is_operator(client) || client == channel->get_admin())
+    if (channel->is_operator(client))
     {
         dest->set_invit_channel(channel);
     }

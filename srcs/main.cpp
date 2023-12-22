@@ -28,13 +28,18 @@ void receive_datas(fd_set *readfds, std::map<int, Client *> &clients)
                 parse_n_exec(buffer, it->second);
             }
         }
-        ++it;
+        if (clients.size() > 0 && it != clients.end())
+            ++it;
+        else
+            break;
     }
 }
 
-// std::vector<Channel *> channels;
-// std::map<int, Client *> clients;
-// std::string password;
+void signal_handler(int signal) {
+    (void)signal;
+    free_all();
+    exit(0);
+}
 
 int main(int ac, char **av)
 {
@@ -53,6 +58,8 @@ int main(int ac, char **av)
         return (1);
     std::cout << "IRC server ON. Port : " << av[1] << std::endl;
 
+    signal(SIGINT, signal_handler);
+
     while (true)
     {
         int max_fd = init_fd(&readfds, serv_socket, clients);
@@ -64,7 +71,7 @@ int main(int ac, char **av)
         if (FD_ISSET(serv_socket, &readfds))
         {
             int newCliSocket = accept(serv_socket, nullptr, nullptr);
-            clients.insert(std::make_pair(newCliSocket, new Client(newCliSocket, atoi(av[1]), "")));
+            clients.insert(std::make_pair(newCliSocket, new Client(newCliSocket, atoi(av[1]), "*")));
             std::cout << "New connection accepted." << std::endl;
         }
         receive_datas(&readfds, clients);
